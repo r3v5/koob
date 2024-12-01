@@ -88,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <ul class="navbar">
             <li><a href="../index.php">koob</a></li>
             <?php if ($isAuthenticated): ?>
-                <li><a href="../books/reserve.php">Reserve a Book</a></li>
+                <li><a href="../books/search_book.php">Search</a></li>
+                <li><a href="../books/reservations.php">Reservations</a></li>
                 <li><a href="logout.php">Logout</a></li>
             <?php else: ?>
                 <li><a href="login.php">Login</a></li>
@@ -160,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn">Register</button>
-                <a href="../index.php" class="btn btn-outline">koob</a>
             </div>
         </form>
     </main>

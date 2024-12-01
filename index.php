@@ -18,7 +18,7 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
             <li><a href="index.php">koob</a></li>
             <?php if ($isAuthenticated): ?>
                 <li><a href="books/search_book.php">Search</a></li>
-                <li><a href="books/reserve_book.php">Reserve</a></li>
+                <li><a href="books/reservations.php">Reservations</a></li>
                 <li><a href="auth/logout.php">Logout</a></li>
             <?php else: ?>
                 <li><a href="auth/login.php">Login</a></li>
@@ -45,8 +45,7 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
                     <a href="auth/login.php" class="btn">Login</a>
                     <a href="auth/registration.php" class="btn">Register</a>
                 <?php else: ?>
-                    <a href="books/search_book.php" class="btn">Search a Book</a>
-                    <a href="books/reserve_book.php" class="btn">Reserve a Book</a>
+                    <a href="books/search_book.php" class="btn">Search books</a>
                 <?php endif; ?>
             </div>
         </div>

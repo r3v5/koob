@@ -1,0 +1,112 @@
+/* Align the main content */
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Search bar styling */
+.search-bar {
+    margin: 20px 0;
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-bar input,
+.search-bar select,
+.search-bar button {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    background-color: #00e676;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+    background-color: #00c853;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+    text-align: center;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+table th {
+    background-color: #333;
+    color: white;
+}
+
+.reserved {
+    color: red;
+    font-weight: bold;
+}
+
+.btn-reserve {
+    background-color: #00e676;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-reserve:hover {
+    background-color: #00c853;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table th,
+    table td {
+        font-size: 0.9rem;
+    }
+}
+
+
+.message-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #00e676;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #00c853;
+}
