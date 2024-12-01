@@ -1,7 +1,6 @@
 # koob
 
-★ The aim of this assignment is to develop a book reservation web site using PHP and
-MySQL database. The application will allow users to search for and reserve library books.
+★ The aim of this assignment is to develop a book reservation web site using PHP, MySQL database and Apache Web Server. The application will allow users to search for and reserve library books.
 Specifically, the application will enable the following:
 
 Library functionality- the users should be allowed to:
@@ -10,6 +9,8 @@ Library functionality- the users should be allowed to:
 - View all the books that they have reserved:
 - Login
 - Registration
+- Logout
+- Session authentication via Cookies
 - Search for a book
 - The results of the search should display as a list from which the user can then reserve a
 book if available. If the book is already reserved, the user should not be allowed to
