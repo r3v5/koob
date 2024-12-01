@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <nav>
         <ul class="navbar">
-            <li><a href="../index.php">Home</a></li>
+            <li><a href="../index.php">koob</a></li>
             <?php if ($isAuthenticated): ?>
                 <li><a href="../books/reserve_book.php">Reserve a Book</a></li>
                 <li><a href="logout.php">Logout</a></li>
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn">Login</button>
-                <a href="../index.php" class="btn btn-outline">Home</a>
+                <a href="../index.php" class="btn btn-outline">koob</a>
             </div>
         </form>
     </main>

@@ -15,7 +15,7 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
 <body>
     <nav>
         <ul class="navbar">
-            <li><a href="index.php">Home</a></li>
+            <li><a href="index.php">koob</a></li>
             <?php if ($isAuthenticated): ?>
                 <li><a href="books/search_book.php">Search</a></li>
                 <li><a href="books/reserve_book.php">Reserve</a></li>
@@ -30,23 +30,16 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
     <header>
         <div class="container">
             <h1><span class="highlight">koob</span></h1>
-            <p>Book Reservation System built with PHP, MySQL and Apache Web Server</p>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Welcome to <span class="highlight">koob</span></h1>
-            <p>Your one-stop Book Reservation System</p>
+            <p>Book Reservation System built with PHP, MySQL and Apache Web Server  </p>
         </div>
     </header>
     <main>
         <div class="cta">
-            <?php if (!$isAuthenticated): ?>
-                <p>Login or Register to get started!</p>
-            <?php else: ?>
-                <p>Hi, <?= htmlspecialchars($username); ?>! Enjoy searching and reserving a book.</p>
-            <?php endif; ?>
+        <?php if (!$isAuthenticated): ?>
+            <p>Login or Register to get started!</p>
+        <?php else: ?>
+            <p>Hi, <?= htmlspecialchars($username); ?>! Enjoy searching and reserving a book.</p>
+        <?php endif; ?>
             <div class="links">
                 <?php if (!$isAuthenticated): ?>
                     <a href="auth/login.php" class="btn">Login</a>
@@ -55,10 +48,6 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
                     <a href="books/search_book.php" class="btn">Search a Book</a>
                     <a href="books/reserve_book.php" class="btn">Reserve a Book</a>
                 <?php endif; ?>
-            <p>Access thousands of books effortlessly. Login or Register now to get started!</p>
-            <div class="links">
-                <a href="auth/login.php" class="btn">Login</a>
-                <a href="auth/registration.php" class="btn btn-outline">Register</a>
             </div>
         </div>
     </main>
