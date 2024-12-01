@@ -31,6 +31,13 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
         <div class="container">
             <h1><span class="highlight">koob</span></h1>
             <p>Book Reservation System built with PHP, MySQL and Apache Web Server</p>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Welcome to <span class="highlight">koob</span></h1>
+            <p>Your one-stop Book Reservation System</p>
         </div>
     </header>
     <main>
@@ -48,6 +55,10 @@ $username = $isAuthenticated ? htmlspecialchars($_SESSION['username']) : null;
                     <a href="books/search_book.php" class="btn">Search a Book</a>
                     <a href="books/reserve_book.php" class="btn">Reserve a Book</a>
                 <?php endif; ?>
+            <p>Access thousands of books effortlessly. Login or Register now to get started!</p>
+            <div class="links">
+                <a href="auth/login.php" class="btn">Login</a>
+                <a href="auth/registration.php" class="btn btn-outline">Register</a>
             </div>
         </div>
     </main>
