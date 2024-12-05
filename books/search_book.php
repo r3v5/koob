@@ -138,6 +138,13 @@ $reserveTitle = $_POST['bookTitle'] ?? null;
         </ul>
     </nav>
 
+    <header>
+        <div class="container">
+            <h1><span class="highlight">koob</span></h1>
+            <p>Search specific book </p>
+        </div>
+    </header>
+
     <main>
         <div class="search-bar">
             <form method="GET">

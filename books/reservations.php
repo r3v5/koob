@@ -35,26 +35,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_remove'])) {
     exit;
 }
 
-$successMessage = "";
-if (isset($_SESSION['success_message'])) {
-    $successMessage = $_SESSION['success_message'];
-    unset($_SESSION['success_message']);
-}
+// Handle modal data
+$removeISBN = $_POST['isbn'] ?? null;
+$removeTitle = $_POST['bookTitle'] ?? null;
 
-$reservations = [];
+// Success message
+$successMessage = $_SESSION['success_message'] ?? "";
+unset($_SESSION['success_message']);
+
+// Pagination variables
+$resultsPerPage = 5;
+$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($currentPage - 1) * $resultsPerPage;
+
+// Fetch total reservations count
+$totalQuery = "SELECT COUNT(*) FROM Reservations WHERE Username = :username";
+$stmt = $pdo->prepare($totalQuery);
+$stmt->execute([':username' => $username]);
+$totalResults = $stmt->fetchColumn();
+$totalPages = ceil($totalResults / $resultsPerPage);
+
+// Fetch reservations for the current page
 $stmt = $pdo->prepare("
     SELECT r.ISBN, b.BookTitle, b.Author, b.Edition, b.Year, c.CategoryDescription, r.ReservedDate
     FROM Reservations r
     INNER JOIN Books b ON r.ISBN = b.ISBN
     LEFT JOIN Categories c ON b.CategoryID = c.CategoryID
     WHERE r.Username = :username
+    LIMIT :limit OFFSET :offset
 ");
-$stmt->execute([':username' => $username]);
+$stmt->bindValue(':username', $username, PDO::PARAM_STR);
+$stmt->bindValue(':limit', $resultsPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
 $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Handle modal data
-$removeISBN = $_POST['isbn'] ?? null;
-$removeTitle = $_POST['bookTitle'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +91,7 @@ $removeTitle = $_POST['bookTitle'] ?? null;
     </nav>
 
     <main class="reservations-wrapper">
-        <h1><?= htmlspecialchars($username) ?>'s reservations</h1>
+        <h1><?= htmlspecialchars($username) ?>'s Reservations</h1>
 
         <?php if (!empty($successMessage)): ?>
             <p class="success"><?= htmlspecialchars($successMessage) ?></p>
@@ -118,8 +132,25 @@ $removeTitle = $_POST['bookTitle'] ?? null;
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <div class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $currentPage - 1])) ?>">Previous</a>
+                <?php endif; ?>
+
+                <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page])) ?>" 
+                       class="<?= $page == $currentPage ? 'active' : '' ?>">
+                       <?= $page ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $currentPage + 1])) ?>">Next</a>
+                <?php endif; ?>
+            </div>
         <?php else: ?>
-            <p>You have not reserved any books yet.</p>
+            <p>No reservations found.</p>
         <?php endif; ?>
 
         <?php if ($removeISBN && $removeTitle): ?>
