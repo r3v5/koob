@@ -20,8 +20,9 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_isbn'])) {
-    $isbn = trim($_POST['remove_isbn']);
+// Handle removal confirmation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_remove'])) {
+    $isbn = trim($_POST['isbn']);
     $stmt = $pdo->prepare("DELETE FROM Reservations WHERE ISBN = :isbn AND Username = :username");
     $stmt->execute([':isbn' => $isbn, ':username' => $username]);
 
@@ -50,6 +51,10 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([':username' => $username]);
 $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Handle modal data
+$removeISBN = $_POST['isbn'] ?? null;
+$removeTitle = $_POST['bookTitle'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +109,8 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($reservation['ReservedDate']) ?></td>
                             <td>
                                 <form method="POST" style="margin: 0;">
-                                    <input type="hidden" name="remove_isbn" value="<?= htmlspecialchars($reservation['ISBN']) ?>">
+                                    <input type="hidden" name="isbn" value="<?= htmlspecialchars($reservation['ISBN']) ?>">
+                                    <input type="hidden" name="bookTitle" value="<?= htmlspecialchars($reservation['BookTitle']) ?>">
                                     <button type="submit" class="btn btn-danger">Remove</button>
                                 </form>
                             </td>
@@ -115,10 +121,82 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php else: ?>
             <p>You have not reserved any books yet.</p>
         <?php endif; ?>
+
+        <?php if ($removeISBN && $removeTitle): ?>
+            <div class="modal">
+                <form method="POST">
+                    <h2 class="prompt-text">Confirm Removal</h2>
+                    <p class="prompt-text">Do you want to remove the reservation for the book <strong><?= htmlspecialchars($removeTitle) ?></strong> (ISBN: <?= htmlspecialchars($removeISBN) ?>)?</p>
+                    <input type="hidden" name="isbn" value="<?= htmlspecialchars($removeISBN) ?>">
+                    <button type="submit" name="confirm_remove" class="btn btn-primary">Yes</button>
+                    <a href="reservations.php" class="btn btn-danger">No</a>
+                </form>
+            </div>
+        <?php endif; ?>
     </main>
 
     <footer>
         <p>&copy; 2024 <span class="highlight">koob</span>. Created by Ian Miller (D23124620)</p>
     </footer>
+
+    <style>
+        .prompt-text {
+            color: black;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal p {
+            margin: 10px 0;
+        }
+
+        .modal .btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal .btn-primary {
+            background-color: #00e676;
+            color: #fff;
+        }
+
+        .modal .btn-danger {
+            background-color: #ff5252;
+            color: #fff;
+        }
+
+        .modal .btn-primary:hover {
+            background-color: #00c853;
+        }
+
+        .modal .btn-danger:hover {
+            background-color: #ff1744;
+        }
+
+        .modal a {
+            text-decoration: none;
+        }
+    </style>
 </body>
 </html>

@@ -19,12 +19,13 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-$successMessage = "";
-$errorMessage = "";
+$successMessage = $_SESSION['success_message'] ?? "";
+$errorMessage = $_SESSION['error_message'] ?? "";
+unset($_SESSION['success_message'], $_SESSION['error_message']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAuthenticated) {
+// Handle reservation confirmation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_reserve']) && $isAuthenticated) {
     $isbn = trim($_POST['isbn']);
-
     try {
         $stmt = $pdo->prepare("SELECT Reserved FROM Books WHERE ISBN = :isbn");
         $stmt->execute([':isbn' => $isbn]);
@@ -37,15 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAuthenticated) {
             $stmt = $pdo->prepare("UPDATE Books SET Reserved = 'Y' WHERE ISBN = :isbn");
             $stmt->execute([':isbn' => $isbn]);
 
-            $successMessage = "The book has been reserved successfully!";
+            $_SESSION['success_message'] = "The book has been reserved successfully!";
         } else {
-            $errorMessage = "The book is already reserved.";
+            $_SESSION['error_message'] = "The book is already reserved.";
         }
     } catch (PDOException $e) {
-        $errorMessage = "Failed to reserve the book: " . $e->getMessage();
+        $_SESSION['error_message'] = "Failed to reserve the book: " . $e->getMessage();
     }
+    header("Location: search_book.php");
+    exit;
 }
 
+// Handle search
 $searchResults = [];
 $title = trim($_GET['title'] ?? '');
 $author = trim($_GET['author'] ?? '');
@@ -104,6 +108,10 @@ try {
 }
 
 $totalPages = ceil($totalResults / $resultsPerPage);
+
+// Handle modal data
+$reserveISBN = $_POST['isbn'] ?? null;
+$reserveTitle = $_POST['bookTitle'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -189,6 +197,7 @@ $totalPages = ceil($totalResults / $resultsPerPage);
                                 <?php if ($book['Reserved'] === 'N' && $isAuthenticated): ?>
                                     <form method="POST" style="margin: 0;">
                                         <input type="hidden" name="isbn" value="<?= htmlspecialchars($book['ISBN']) ?>">
+                                        <input type="hidden" name="bookTitle" value="<?= htmlspecialchars($book['BookTitle']) ?>">
                                         <button type="submit" class="btn-reserve">Reserve</button>
                                     </form>
                                 <?php elseif ($book['Reserved'] === 'Y'): ?>
@@ -201,7 +210,7 @@ $totalPages = ceil($totalResults / $resultsPerPage);
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
+        
             <div class="pagination">
                 <?php if ($currentPage > 1): ?>
                     <a href="?<?= http_build_query(array_merge($_GET, ['page' => $currentPage - 1])) ?>">Previous</a>
@@ -218,13 +227,86 @@ $totalPages = ceil($totalResults / $resultsPerPage);
                     <a href="?<?= http_build_query(array_merge($_GET, ['page' => $currentPage + 1])) ?>">Next</a>
                 <?php endif; ?>
             </div>
+
         <?php else: ?>
             <p>No books found matching your search criteria.</p>
+        <?php endif; ?>
+
+        <?php if ($reserveISBN && $reserveTitle): ?>
+            <div class="modal">
+                <form method="POST">
+                    <h2 class="prompt-text">Confirm Reservation</h2>
+                    <p class="prompt-text">Do you want to reserve the book <strong><?= htmlspecialchars($reserveTitle) ?></strong> (ISBN: <?= htmlspecialchars($reserveISBN) ?>)?</p>
+                    <input type="hidden" name="isbn" value="<?= htmlspecialchars($reserveISBN) ?>">
+                    <button type="submit" name="confirm_reserve" class="btn btn-primary">Yes</button>
+                    <a href="search_book.php" class="btn btn-danger">No</a>
+                </form>
+            </div>
         <?php endif; ?>
     </main>
 
     <footer>
         <p>&copy; 2024 <span class="highlight">koob</span>. Created by Ian Miller (D23124620)</p>
     </footer>
+
+    <style>
+        .prompt-text {
+            color: black;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal p {
+            margin: 10px 0;
+        }
+
+        .modal .btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal .btn-primary {
+            background-color: #00e676;
+            color: #fff;
+        }
+
+        .modal .btn-danger {
+            background-color: #ff5252;
+            color: #fff;
+        }
+
+        .modal .btn-primary:hover {
+            background-color: #00c853;
+        }
+
+        .modal .btn-danger:hover {
+            background-color: #ff1744;
+        }
+
+        .modal a {
+            text-decoration: none;
+        }
+    </style>
 </body>
 </html>
