@@ -54,13 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav>
         <ul class="navbar">
             <li><a href="../index.php">koob</a></li>
-            <?php if ($isAuthenticated): ?>
-                <li><a href="../books/reserve_book.php">Reserve a Book</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            <?php else: ?>
-                <li><a href="login.php">Login</a></li>
-                <li><a href="registration.php">Register</a></li>
-            <?php endif; ?>
+            <li><a href="login.php">Login</a></li>
+            <li><a href="registration.php">Register</a></li>
         </ul>
     </nav>
 
